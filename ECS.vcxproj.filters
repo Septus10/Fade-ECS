@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Src\Globals.h" />
+    <ClInclude Include="Src\Timer.hpp" />
+    <ClInclude Include="Src\ECS\Component.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Entity.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\EntityManager.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\SystemManager.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{7cb3403c-9023-4c61-a808-091606a60198}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
