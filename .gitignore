@@ -25,6 +25,7 @@
 *.la
 *.a
 *.lib
+!Thirdparty/**/*.lib
 
 # Executables
 *.exe
@@ -36,3 +37,5 @@
 *.VC.db
 *.vcxproj.user
 *.VC.opendb
+*.idb
+*.tlog

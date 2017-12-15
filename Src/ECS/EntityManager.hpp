@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Component.hpp"
+#include "ComponentArray.hpp"
 
+#include "../Globals.h"
+
+#include <iostream>
 #include <vector>
 #include <bitset>
 #include <map>
@@ -13,68 +16,45 @@ namespace ECS {
 class EntityManager
 {
 public:
-    ~EntityManager()
-    {
-        for (auto& it : Components_)
-        {
-            delete it;
-        }
+	~EntityManager();
 
-        Components_.clear();
-    }
-
-    Entity CreateEntity()
-    {
-        Entity ID = generateEntityID();
-        EntityMap_[ID] = 0;
-        IndexMap_[ID] = std::vector<usize>();
-        return ID;
-    }
+	Entity CreateEntity();
 
     template <typename T>
-    void AddComponent(const Entity EntityID)
+    T* AddComponent(const Entity EntityID)
     {
         if (EntityMap_.find(EntityID) == EntityMap_.end())
         {
             // error, can't find entity with ID
             std::cout << "Error: Can't find entity with id: " << EntityID << "\n";
-            return;
+            return nullptr;
         }
-        EntityMap_[EntityID] |= static_cast<u64>(T::GetComponentType());
+        EntityMap_[EntityID] |= static_cast<u64>(T::GetComponentFamily());
 
         auto& indices = IndexMap_[EntityID];
-        indices.push_back(Components_.size());
-        Components_.push_back(new T());
+        indices.push_back(Components_.Size());
+        return Components_.StoreNewComponent<T>(EntityID);
     }
 
-    std::map<Entity, std::vector<Component*>> GetEntitiesWithComponents(u64 RequiredComponents)
-    {
-        std::map<Entity, std::vector<Component*>> ECM;
-        for (auto& it: EntityMap_)
-        {
-            if (RequiredComponents & it.second) // does this entity contain these components
-            {
-                std::vector<Component*> CV;
-                auto& IndexMap = IndexMap_[it.first];
-                for (auto& index: IndexMap)
-                {
-                    CV.push_back(Components_[index]);
-                }
+	std::vector<Entity> GetEntitiesWithComponents(u64 Components);
 
-                ECM[it.first] = CV;
-            }
-        }
-        return ECM;
+	template <typename T>
+	T* GetComponentFromEntity(Entity EntityID)
+	{
+		return Components_.GetComponentFromEntity<T>(EntityID);
+	}
+
+	template <typename T>
+	std::vector<T*> GetComponentsOfType()
+	{
+		return Components_.GetComponentsOfType<T>();
     }
 
 private:
-    Entity generateEntityID() const
-    {
-        return static_cast<Entity>(EntityMap_.size());
-    }
+	Entity generateEntityID() const;
 
 private:
-    std::vector<Component*>                             Components_;
+	ComponentArray<>									Components_;
     std::unordered_map<Entity, u64>                     EntityMap_;
     std::unordered_map<Entity, std::vector<usize>>      IndexMap_;
 

@@ -68,7 +68,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)Thirdparty\SDL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Thirdparty\SDL\lib\$(Platform);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)Thirdparty\SDL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Thirdparty\SDL\lib\$(Platform);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -82,6 +89,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -107,18 +117,39 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Src\ECS\Component.hpp" />
+    <ClInclude Include="Src\ECS\ComponentArray.hpp" />
+    <ClInclude Include="Src\ECS\Components\Camera.hpp" />
+    <ClInclude Include="Src\ECS\Components\ComponentFamilies.hpp" />
+    <ClInclude Include="Src\ECS\Components\Input.hpp" />
+    <ClInclude Include="Src\ECS\Components\Sprite.hpp" />
+    <ClInclude Include="Src\ECS\Components\Transform.hpp" />
+    <ClInclude Include="Src\ECS\Components\Velocity.hpp" />
     <ClInclude Include="Src\ECS\Entity.hpp" />
     <ClInclude Include="Src\ECS\EntityManager.hpp" />
+    <ClInclude Include="Src\ECS\Event.hpp" />
+    <ClInclude Include="Src\ECS\System.hpp" />
     <ClInclude Include="Src\ECS\SystemManager.hpp" />
+    <ClInclude Include="Src\Gameplay\InputSystem.hpp" />
+    <ClInclude Include="Src\Gameplay\MovementSystem.hpp" />
     <ClInclude Include="Src\Globals.h" />
+    <ClInclude Include="Src\Rendering\RenderSystem.hpp" />
+    <ClInclude Include="Src\Rendering\SpriteManager.hpp" />
+    <ClInclude Include="Src\Rendering\Window.hpp" />
     <ClInclude Include="Src\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\ECS\EntityManager.cpp" />
+    <ClCompile Include="Src\ECS\SystemManager.cpp" />
+    <ClCompile Include="Src\Gameplay\InputSystem.cpp" />
+    <ClCompile Include="Src\Gameplay\MovementSystem.cpp" />
     <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\Rendering\RenderSystem.cpp" />
+    <ClCompile Include="Src\Rendering\SpriteManager.cpp" />
+    <ClCompile Include="Src\Rendering\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

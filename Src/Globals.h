@@ -20,6 +20,8 @@ using c8    = char;
 using c16   = char16_t;
 using c32   = char32_t;
 
+using Pointer = void*;
+
 // global variables
-c8* g_ExecutablePath;
-bool g_ShouldRun = true;
+extern c8*		g_ExecutablePath;
+extern bool		g_ShouldRun;

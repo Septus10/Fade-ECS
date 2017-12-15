@@ -3,9 +3,6 @@
   <ItemGroup>
     <ClInclude Include="Src\Globals.h" />
     <ClInclude Include="Src\Timer.hpp" />
-    <ClInclude Include="Src\ECS\Component.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
     <ClInclude Include="Src\ECS\Entity.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
@@ -15,13 +12,85 @@
     <ClInclude Include="Src\ECS\SystemManager.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Src\ECS\ComponentArray.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Rendering\RenderSystem.hpp">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gameplay\MovementSystem.hpp">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\System.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Components\ComponentFamilies.hpp">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Rendering\SpriteManager.hpp">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gameplay\InputSystem.hpp">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Components\Transform.hpp">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Components\Camera.hpp">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Components\Velocity.hpp">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Components\Sprite.hpp">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Event.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ECS\Components\Input.hpp">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Rendering\Window.hpp">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp" />
+    <ClCompile Include="Src\ECS\EntityManager.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Rendering\RenderSystem.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gameplay\MovementSystem.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ECS\SystemManager.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Rendering\SpriteManager.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gameplay\InputSystem.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Rendering\Window.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ECS">
       <UniqueIdentifier>{7cb3403c-9023-4c61-a808-091606a60198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS\Components">
+      <UniqueIdentifier>{c98bba24-eeed-44b3-abd2-6beefea1fd14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{132404c9-6433-4888-9712-b8bedb1b0945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gameplay">
+      <UniqueIdentifier>{0c9329d8-52a7-429b-93b4-b1f9b8f938fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

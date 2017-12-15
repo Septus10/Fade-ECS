@@ -4,23 +4,10 @@
 #include <memory>
 
 #include "EntityManager.hpp"
+#include "System.hpp"
+#include "Event.hpp"
 
 namespace ECS {
-    
-class System
-{
-public:
-    virtual ~System() = default;
-
-    virtual void Tick(double DeltaTime, std::map<Entity, std::vector<Component*>> Components) = 0;
-
-    virtual void FixedTick(double FixedDeltaTime, std::map<Entity, std::vector<Component*>> Components) = 0;
-
-    virtual u64 GetRequiredComponents() const = 0;
-
-protected:
-    virtual void ProcessEntity(Entity EntityID, std::vector<Component*> Components) = 0;
-};
 
 class SystemManager
 {
@@ -30,28 +17,19 @@ public:
     {  }
 
     template <typename T>
-    inline void RegisterSystem()
+    T* RegisterSystem()
     {
-        Systems_.push_back(move(std::make_unique<T>()));
+		std::unique_ptr<T> System = std::make_unique<T>();
+		System->SetEntityManager(EntityManager_);
+        Systems_.push_back(move(System));
+		return static_cast<T*>(Systems_.back().get());
     }
 
-    void TickSystems(double DeltaTime)
-    {
-        for (auto i = 0; i < Systems_.size(); i++)
-        {
-            auto ECM = EntityManager_->GetEntitiesWithComponents(Systems_[i]->GetRequiredComponents());
-            Systems_[i]->Tick(DeltaTime, ECM);
-        }
-    }
+	void TickSystems(double DeltaTime);
 
-    void FixedTickSystems(double FixedDeltaTime)
-    {
-        for (auto i = 0; i < Systems_.size(); i++)
-        {
-            auto ECM = EntityManager_->GetEntitiesWithComponents(Systems_[i]->GetRequiredComponents());
-            Systems_[i]->FixedTick(FixedDeltaTime, ECM);
-        }
-    }
+	void FixedTickSystems(double FixedDeltaTime);
+
+	void SendEvent(EventBase* a_Event);
 
 private:
     std::vector<std::unique_ptr<System>> Systems_;
