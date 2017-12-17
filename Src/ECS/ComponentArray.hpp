@@ -46,6 +46,8 @@ private:
 	usize							DataSize_;
 	std::unordered_map
 		<Entity, std::vector<ComponentData>>		EntityComponentOffsets_;
+    std::vector<ComponentData>      SingletonComponentOffsets_;
+        
 	usize							NumComponents_;
 	Alloc							Alloc_;
 
@@ -77,6 +79,43 @@ private:
 		}		
 	}
 
+    template <typename T>
+    inline T* GetComponentFromComponentDataArray(std::vector<ComponentData> Array)
+	{
+        ComponentFamily Family = T::GetComponentFamily();
+        for (auto& it: Array)
+        {
+            if (it.Family_ == Family)
+            {
+                usize IntAddress = reinterpret_cast<usize>(Data_) + it.Offset_;
+                return reinterpret_cast<T*>(IntAddress);
+            }
+        }
+
+        return nullptr;
+	}
+
+    template <typename T>
+    T* StoreComponentInMemory(const usize Size, ComponentData& CompData)
+	{
+        if (Size + DataSize_ > MaxSize_)
+        {
+            Resize(DataSize_ + Size);
+        }
+
+        usize IntAddress = reinterpret_cast<usize>(Data_) + DataSize_;
+        Pointer Address = reinterpret_cast<void*>(IntAddress);
+        T* Comp =  static_cast<T*>(new(Address) T());
+
+        CompData.Family_ = T::GetComponentFamily();
+        CompData.Offset_ = DataSize_;
+
+        DataSize_	    += Size;
+        NumComponents_  ++;
+
+        return Comp;
+	}
+
 public:
 	ComponentArray()
 	{
@@ -99,21 +138,14 @@ public:
 			return Test;
 		}
 
-		usize ComponentSize = sizeof(T);
-		if (ComponentSize + DataSize_ > MaxSize_)
-		{
-			Resize(DataSize_ + ComponentSize);
-		}
+        if (T* Test = GetSingletonComponent<T>())
+        {
+            return Test;
+        }
 
-		usize IntAddress = reinterpret_cast<usize>(Data_) + DataSize_;
-		Pointer Address = reinterpret_cast<void*>(IntAddress);
-		T* Comp = static_cast<T*>(new(Address) T());
-		std::cout << "Component created at address: " << Address << " with size (" << ComponentSize 
-		<< ") next available memory at address: " << reinterpret_cast<void*>(IntAddress + ComponentSize) << "\n";
-		
-		ComponentData EntityCompData;
-		EntityCompData.Family_	= T::GetComponentFamily();
-		EntityCompData.Offset_ = DataSize_;
+		usize ComponentSize = sizeof(T);
+        ComponentData EntityCompData;
+		T* Comp = StoreComponentInMemory<T>(ComponentSize, EntityCompData);
 		if (EntityComponentOffsets_.find(OwnerID) == EntityComponentOffsets_.end())
 		{
 			EntityComponentOffsets_.insert(
@@ -124,28 +156,40 @@ public:
 				);
 		}
 		EntityComponentOffsets_[OwnerID].push_back(EntityCompData);
-
-		DataSize_	+= ComponentSize;
-		NumComponents_++;
 		return Comp;
 	}
+
+    template <typename T>
+    T* StoreNewSingletonComponent(const Entity EntityID)
+    {
+        if (T* Test = GetSingletonComponent<T>())
+        {
+            return Test;
+        }
+
+        usize ComponentSize = sizeof(T);
+        ComponentData CompData;
+        T* Comp = StoreComponentInMemory<T>(ComponentSize, CompData);
+        SingletonComponentOffsets_.push_back(CompData);
+        return Comp;
+    }
 
 	template <typename T>
 	T* GetComponentFromEntity(Entity EntityID)
 	{		
-		ComponentFamily Family = T::GetComponentFamily();
 		auto& ComponentIndices = EntityComponentOffsets_[EntityID];
+		T* Comp = GetComponentFromComponentDataArray<T>(ComponentIndices);
+        if (!Comp)
+        {
+            Comp = GetSingletonComponent<T>();
+        }
+        return Comp;
+	}
 
-		for (auto& it: ComponentIndices)
-		{
-			if (it.Family_ == Family)
-			{
-				usize IntAddress = reinterpret_cast<usize>(Data_) + it.Offset_;
-				return reinterpret_cast<T*>(IntAddress);
-			}			
-		}		
-
-		return nullptr;
+    template <typename T>
+    T* GetSingletonComponent()
+	{
+	    return GetComponentFromComponentDataArray<T>(SingletonComponentOffsets_);
 	}
 
 	template <typename T>

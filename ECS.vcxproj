@@ -129,7 +129,7 @@
     <ClInclude Include="Src\ECS\Components\Transform.hpp" />
     <ClInclude Include="Src\ECS\Components\Velocity.hpp" />
     <ClInclude Include="Src\ECS\Entity.hpp" />
-    <ClInclude Include="Src\ECS\EntityManager.hpp" />
+    <ClInclude Include="Src\ECS\EntityComponentManager.hpp" />
     <ClInclude Include="Src\ECS\Event.hpp" />
     <ClInclude Include="Src\ECS\System.hpp" />
     <ClInclude Include="Src\ECS\SystemManager.hpp" />
@@ -142,7 +142,7 @@
     <ClInclude Include="Src\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\ECS\EntityManager.cpp" />
+    <ClCompile Include="Src\ECS\EntityComponentManager.cpp" />
     <ClCompile Include="Src\ECS\SystemManager.cpp" />
     <ClCompile Include="Src\Gameplay\InputSystem.cpp" />
     <ClCompile Include="Src\Gameplay\MovementSystem.cpp" />

@@ -14,6 +14,10 @@ public:
 
 	virtual ~System() = default;
 
+    virtual bool InitSystem() = 0;
+
+    virtual void PreTick() = 0;
+
 	virtual void Tick(double DeltaTime) = 0;
 
 	virtual void FixedTick(double FixedDeltaTime) = 0;

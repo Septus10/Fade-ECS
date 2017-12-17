@@ -6,9 +6,6 @@
     <ClInclude Include="Src\ECS\Entity.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Src\ECS\EntityManager.hpp">
-      <Filter>ECS</Filter>
-    </ClInclude>
     <ClInclude Include="Src\ECS\SystemManager.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
@@ -54,12 +51,12 @@
     <ClInclude Include="Src\Rendering\Window.hpp">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Src\ECS\EntityComponentManager.hpp">
+      <Filter>ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp" />
-    <ClCompile Include="Src\ECS\EntityManager.cpp">
-      <Filter>ECS</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Rendering\RenderSystem.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -77,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="Src\Rendering\Window.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ECS\EntityComponentManager.cpp">
+      <Filter>ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,16 @@
 #include "SystemManager.hpp"
 
 namespace ECS {
-	
+
+//===========================================================================//
+void SystemManager::PreTickSystems()
+{
+    for (auto& System: Systems_)
+    {
+        System->PreTick();
+    }
+}
+//===========================================================================//
 void SystemManager::TickSystems(double DeltaTime)
 {
 	for (auto& System : Systems_)
@@ -9,7 +18,7 @@ void SystemManager::TickSystems(double DeltaTime)
 		System->Tick(DeltaTime);
 	}
 }
-
+//===========================================================================//
 void SystemManager::FixedTickSystems(double FixedDeltaTime)
 {
 	for (auto& System : Systems_)
@@ -17,7 +26,7 @@ void SystemManager::FixedTickSystems(double FixedDeltaTime)
 		System->FixedTick(FixedDeltaTime);
 	}
 }
-
+//===========================================================================//
 void SystemManager::SendEvent(EventBase* a_Event)
 {
 	for (auto& System : Systems_)
@@ -25,5 +34,6 @@ void SystemManager::SendEvent(EventBase* a_Event)
 		System->ReceiveEvent(a_Event);
 	}
 }
+//===========================================================================//
 
 }

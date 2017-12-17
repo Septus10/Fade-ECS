@@ -2,7 +2,7 @@
 
 #include "Globals.h"
 
-#include "ECS/EntityManager.hpp"
+#include "ECS/EntityComponentManager.hpp"
 #include "ECS/SystemManager.hpp"
 #include "ECS/Components/Transform.hpp"
 #include "ECS/Components/Camera.hpp"
@@ -36,8 +36,10 @@ int main(int argc, char** argv)
 
     ECS::EntityManager eMgr;
     ECS::Entity ent = eMgr.CreateEntity();
-    eMgr.AddComponent<Transform>(ent);
-	eMgr.AddComponent<Input>(ent);
+    Transform* trans = eMgr.AddComponent<Transform>(ent);
+    trans->PosX = 100;
+    trans->PosY = 100;
+	eMgr.AddSingletonComponent<Input>(ent);
 	Velocity* vel = eMgr.AddComponent<Velocity>(ent);
 	if (!vel)
 	{
@@ -83,6 +85,7 @@ int main(int argc, char** argv)
 				sMgr->SendEvent(&ie);
 			}
 		}
+        sMgr->PreTickSystems();
         sMgr->TickSystems(timer.elapsed());
 		timer.reset();
         if (fixedTimer.elapsed() > FixedFpsSeconds)
@@ -90,7 +93,6 @@ int main(int argc, char** argv)
             sMgr->FixedTickSystems(fixedTimer.elapsed());
 			fixedTimer.reset();
         }
-		wnd.ShowScreen();
     }
 
 	return 0;

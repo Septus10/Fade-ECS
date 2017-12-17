@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "EntityManager.hpp"
+#include "EntityComponentManager.hpp"
 #include "System.hpp"
 #include "Event.hpp"
 
@@ -24,6 +24,8 @@ public:
         Systems_.push_back(move(System));
 		return static_cast<T*>(Systems_.back().get());
     }
+
+    void PreTickSystems();
 
 	void TickSystems(double DeltaTime);
 

@@ -17,13 +17,13 @@ public:
 	void SetRect(u32 X1, u32 Y1, u32 X2, u32 Y2, u32 Color);
 
 	void ClearScreen();
+    
+    SDL_Surface*    GetScreenSurface() const;
 
-	void ShowScreen();
-
+    SDL_Window*     GetWindowHandle() const;
 private:
 	SDL_Window*		Window_			= nullptr;
-	SDL_Renderer*	Renderer_		= nullptr;
-	SDL_Surface*	ScreenSurface_	= nullptr;
+    SDL_Surface*	ScreenSurface_	= nullptr;
 };
 
 }

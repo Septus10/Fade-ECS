@@ -15,6 +15,21 @@ namespace ECS {
  
 class EntityManager
 {
+private:
+    template <typename T>
+    bool AddComponentToEntity(const Entity EntityID)
+    {
+        if (EntityMap_.find(EntityID) == EntityMap_.end())
+        {
+            // error, can't find entity with ID
+            std::cout << "Error: Can't find entity with id: " << EntityID << "\n";
+            return false;
+        }
+
+        EntityMap_[EntityID] |= static_cast<u64>(T::GetComponentFamily());
+        return true;
+    }
+
 public:
 	~EntityManager();
 
@@ -22,24 +37,31 @@ public:
 
     template <typename T>
     T* AddComponent(const Entity EntityID)
-    {
-        if (EntityMap_.find(EntityID) == EntityMap_.end())
+    {       
+        if (!AddComponentToEntity<T>(EntityID))
         {
-            // error, can't find entity with ID
-            std::cout << "Error: Can't find entity with id: " << EntityID << "\n";
             return nullptr;
         }
-        EntityMap_[EntityID] |= static_cast<u64>(T::GetComponentFamily());
-
         auto& indices = IndexMap_[EntityID];
         indices.push_back(Components_.Size());
         return Components_.StoreNewComponent<T>(EntityID);
     }
 
+    template <typename T>
+    T* AddSingletonComponent(const Entity EntityID)
+    {
+        if (!AddComponentToEntity<T>(EntityID))
+        {
+            return nullptr;
+        }
+
+        return Components_.StoreNewSingletonComponent<T>(EntityID);
+    }
+
 	std::vector<Entity> GetEntitiesWithComponents(u64 Components);
 
 	template <typename T>
-	T* GetComponentFromEntity(Entity EntityID)
+	T* GetComponentFromEntity(const Entity EntityID)
 	{
 		return Components_.GetComponentFromEntity<T>(EntityID);
 	}

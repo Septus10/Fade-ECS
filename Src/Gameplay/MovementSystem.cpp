@@ -1,5 +1,5 @@
 #include "MovementSystem.hpp"
-#include "../ECS/EntityManager.hpp"
+#include "../ECS/EntityComponentManager.hpp"
 #include "../ECS/Components/Velocity.hpp"
 #include "../ECS/Components/Transform.hpp"
 #include "../ECS/Components/Input.hpp"

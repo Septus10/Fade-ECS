@@ -3,6 +3,8 @@
 #include "Velocity.hpp"
 #include "ComponentFamilies.hpp"
 
+#include <intrin.h>
+
 struct Transform
 {
 	Transform()
