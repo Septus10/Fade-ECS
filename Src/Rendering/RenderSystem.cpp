@@ -37,8 +37,8 @@ void RenderSystem::Tick(double DeltaTime)
 	{
 		ECS::Entity Cur = ValidEntities[i];
 		Transform* Trans = EntityManager_->GetComponentFromEntity<Transform>(Cur);
-		Window_->SetRect(Trans->PosX - 1, Trans->PosY - 1, 
-            Trans->PosX + 1, Trans->PosY + 1, 0xFFFFFF);
+		Window_->SetRect(Trans->PosX - 3, Trans->PosY - 3, 
+            Trans->PosX + 3, Trans->PosY + 3, 0xFFFFFF);
 	}
 }
 //===========================================================================//
@@ -52,7 +52,7 @@ u64 RenderSystem::GetRequiredComponents() const
 	return static_cast<u64>(ECS::CF_Transform);
 }
 //===========================================================================//
-void RenderSystem::ReceiveEvent(ECS::EventBase* a_Event)
+void RenderSystem::ReceiveEvent(ECS::EventBase& a_Event)
 {
 
 }

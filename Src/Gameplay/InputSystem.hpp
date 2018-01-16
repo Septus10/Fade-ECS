@@ -13,7 +13,7 @@ public:
 	virtual void Tick(double DeltaTime) override;
 	virtual void FixedTick(double FixedDeltaTime) override;
 	virtual u64 GetRequiredComponents() const override;
-	virtual void ReceiveEvent(ECS::EventBase* a_Event) override;
+	virtual void ReceiveEvent(ECS::EventBase& a_Event) override;
 
 private:
 	std::queue<ECS::InputEvent> InputEventQueue;

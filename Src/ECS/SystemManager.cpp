@@ -27,7 +27,7 @@ void SystemManager::FixedTickSystems(double FixedDeltaTime)
 	}
 }
 //===========================================================================//
-void SystemManager::SendEvent(EventBase* a_Event)
+void SystemManager::SendEvent(EventBase& a_Event)
 {
 	for (auto& System : Systems_)
 	{

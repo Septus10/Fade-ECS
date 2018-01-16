@@ -50,13 +50,10 @@ u64 InputSystem::GetRequiredComponents() const
 	return static_cast<u64>(ECS::CF_Input);
 }
 //===========================================================================//
-void InputSystem::ReceiveEvent(ECS::EventBase* a_Event)
+void InputSystem::ReceiveEvent(ECS::EventBase& a_Event)
 {
-	ECS::InputEvent* InputEvent = dynamic_cast<ECS::InputEvent*>(a_Event);
-	if (InputEvent)
-	{
-		InputEventQueue.push(ECS::InputEvent(*InputEvent));
-	}
+	ECS::InputEvent& InputEvent = dynamic_cast<ECS::InputEvent&>(a_Event);
+	InputEventQueue.push(ECS::InputEvent(InputEvent));
 }
 //===========================================================================//
 

@@ -31,7 +31,7 @@ public:
 
 	void FixedTickSystems(double FixedDeltaTime);
 
-	void SendEvent(EventBase* a_Event);
+	void SendEvent(EventBase& a_Event);
 
 private:
     std::vector<std::unique_ptr<System>> Systems_;

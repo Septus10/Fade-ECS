@@ -24,8 +24,7 @@ public:
 
 	virtual u64 GetRequiredComponents() const = 0;
 
-	virtual void ReceiveEvent(EventBase* a_Event) = 0;
-
+	virtual void ReceiveEvent(EventBase& a_Event) = 0;
 
 	void SetEntityManager(EntityManager* Mgr)
 	{

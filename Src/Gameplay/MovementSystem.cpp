@@ -56,7 +56,7 @@ u64 MovementSystem::GetRequiredComponents() const
 		ECS::CF_Velocity);
 }
 //===========================================================================//
-void MovementSystem::ReceiveEvent(ECS::EventBase* a_Event)
+void MovementSystem::ReceiveEvent(ECS::EventBase& a_Event)
 {
 }
 //===========================================================================//

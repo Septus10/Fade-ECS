@@ -17,7 +17,7 @@ public:
 
 	virtual u64 GetRequiredComponents() const;
 
-	virtual void ReceiveEvent(ECS::EventBase* a_Event) override;
+	virtual void ReceiveEvent(ECS::EventBase& a_Event) override;
 };
 
 }

@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 	vel->VelX = 10.f;
 	vel->VelY = 10.f;
 
-    std::unique_ptr<ECS::SystemManager> sMgr = std::make_unique<ECS::SystemManager>(&eMgr);
-    sMgr->RegisterSystem<Gameplay::MovementSystem>();
-	sMgr->RegisterSystem<Gameplay::InputSystem>();
-	Rendering::RenderSystem* rSystem = sMgr->RegisterSystem<Rendering::RenderSystem>();
-	rSystem->SetWindowContext(&wnd);
+    ECS::SystemManager systemMgr(&eMgr);
+    systemMgr.RegisterSystem<Gameplay::MovementSystem>();
+	systemMgr.RegisterSystem<Gameplay::InputSystem>();
+	auto renderSystem = systemMgr.RegisterSystem<Rendering::RenderSystem>();
+	renderSystem->SetWindowContext(&wnd);
 
     Timer timer, fixedTimer;
     timer.start();
@@ -70,27 +70,28 @@ int main(int argc, char** argv)
 				g_ShouldRun = false;
 				break;
 			}
-			else if (e.type == SDL_KEYDOWN)
+			
+			if (e.type == SDL_KEYDOWN)
 			{
 				ECS::InputEvent ie;
 				ie.Key = e.key.keysym.scancode;
 				ie.Action = e.key.repeat ? ECS::IA_Repeat : ECS::IA_Pressed;
-				sMgr->SendEvent(&ie);
+				systemMgr.SendEvent(ie);
 			}
 			else if (e.type == SDL_KEYUP)
 			{
 				ECS::InputEvent ie;
 				ie.Key = e.key.keysym.scancode;
 				ie.Action = ECS::IA_Released;
-				sMgr->SendEvent(&ie);
+				systemMgr.SendEvent(ie);
 			}
 		}
-        sMgr->PreTickSystems();
-        sMgr->TickSystems(timer.elapsed());
+        systemMgr.PreTickSystems();
+        systemMgr.TickSystems(timer.elapsed());
 		timer.reset();
         if (fixedTimer.elapsed() > FixedFpsSeconds)
         {
-            sMgr->FixedTickSystems(fixedTimer.elapsed());
+            systemMgr.FixedTickSystems(fixedTimer.elapsed());
 			fixedTimer.reset();
         }
     }
