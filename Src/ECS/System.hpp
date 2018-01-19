@@ -2,6 +2,7 @@
 
 #include "../Globals.h"
 #include "Event.hpp"
+#include <vector>
 
 namespace ECS {
 	
@@ -22,7 +23,7 @@ public:
 
 	virtual void FixedTick(double FixedDeltaTime) = 0;
 
-	virtual u64 GetRequiredComponents() const = 0;
+	virtual std::vector<usize> GetRequiredComponents() const = 0;
 
 	virtual void ReceiveEvent(EventBase& a_Event) = 0;
 

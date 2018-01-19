@@ -7,6 +7,7 @@
 namespace Gameplay {
 	
 float g_Gravity = 9.f;
+
 //===========================================================================//
 void MovementSystem::Tick(double DeltaTime)
 {
@@ -39,7 +40,6 @@ void MovementSystem::Tick(double DeltaTime)
 		{
 			Trans->PosY += (Vel->VelY * fDeltaTime);
 		}
-
 	}
 }
 //===========================================================================//
@@ -48,12 +48,13 @@ void MovementSystem::FixedTick(double FixedDeltaTime)
 	
 }
 //===========================================================================//
-u64 MovementSystem::GetRequiredComponents() const
+std::vector<usize> MovementSystem::GetRequiredComponents() const
 {
-	return static_cast<u64>(
-		ECS::CF_Transform | 
-		ECS::CF_Input | 
-		ECS::CF_Velocity);
+	return std::vector<usize> {
+		typeid(Transform).hash_code(),
+		typeid(Input).hash_code(),
+		typeid(Velocity).hash_code()
+	};
 }
 //===========================================================================//
 void MovementSystem::ReceiveEvent(ECS::EventBase& a_Event)

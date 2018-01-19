@@ -123,7 +123,6 @@
   <ItemGroup>
     <ClInclude Include="Src\ECS\ComponentArray.hpp" />
     <ClInclude Include="Src\ECS\Components\Camera.hpp" />
-    <ClInclude Include="Src\ECS\Components\ComponentFamilies.hpp" />
     <ClInclude Include="Src\ECS\Components\Input.hpp" />
     <ClInclude Include="Src\ECS\Components\Sprite.hpp" />
     <ClInclude Include="Src\ECS\Components\Transform.hpp" />

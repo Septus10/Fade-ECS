@@ -47,9 +47,11 @@ void RenderSystem::FixedTick(double FixedDeltaTime)
 
 }
 //===========================================================================//
-u64 RenderSystem::GetRequiredComponents() const
+std::vector<usize> RenderSystem::GetRequiredComponents() const
 {
-	return static_cast<u64>(ECS::CF_Transform);
+	return std::vector<usize> {
+		typeid(Transform).hash_code()
+	};
 }
 //===========================================================================//
 void RenderSystem::ReceiveEvent(ECS::EventBase& a_Event)

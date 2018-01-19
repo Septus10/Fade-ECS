@@ -14,11 +14,11 @@ struct EventBase
 	virtual ~EventBase() = default;
 };
 
-template <u32 EID>
+template <u32 EvID>
 struct Event : public EventBase
 {
 	Event() :
-		EventID(EID)
+		EventID(EvID)
 	{ }
 
 	virtual ~Event() = default;

@@ -26,7 +26,7 @@ private:
             return false;
         }
 
-        EntityMap_[EntityID] |= static_cast<u64>(T::GetComponentFamily());
+		EntityMap_[EntityID].push_back(typeid(T).hash_code());
         return true;
     }
 
@@ -58,7 +58,7 @@ public:
         return Components_.StoreNewSingletonComponent<T>(EntityID);
     }
 
-	std::vector<Entity> GetEntitiesWithComponents(u64 Components);
+	std::vector<Entity> GetEntitiesWithComponents(std::vector<usize> Components);
 
 	template <typename T>
 	T* GetComponentFromEntity(const Entity EntityID)
@@ -77,7 +77,7 @@ private:
 
 private:
 	ComponentArray<>									Components_;
-    std::unordered_map<Entity, u64>                     EntityMap_;
+    std::unordered_map<Entity, std::vector<usize>>      EntityMap_;
     std::unordered_map<Entity, std::vector<usize>>      IndexMap_;
 
 };

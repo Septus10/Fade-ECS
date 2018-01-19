@@ -1,6 +1,5 @@
 #include "InputSystem.hpp"
 
-#include "../ECS/Components/ComponentFamilies.hpp"
 #include "../ECS/Components/Input.hpp"
 #include "../ECS/Event.hpp"
 #include "../ECS/EntityComponentManager.hpp"
@@ -45,9 +44,11 @@ void InputSystem::FixedTick(double FixedDeltaTime)
 	
 }
 //===========================================================================//
-u64 InputSystem::GetRequiredComponents() const
+std::vector<usize> InputSystem::GetRequiredComponents() const
 {
-	return static_cast<u64>(ECS::CF_Input);
+	return std::vector<usize> {
+		typeid(Input).hash_code()
+	};
 }
 //===========================================================================//
 void InputSystem::ReceiveEvent(ECS::EventBase& a_Event)

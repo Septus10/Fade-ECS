@@ -15,7 +15,7 @@ public:
 
 	virtual void FixedTick(double FixedDeltaTime) override;
 
-	virtual u64 GetRequiredComponents() const;
+	virtual std::vector<usize> GetRequiredComponents() const override;
 
 	virtual void ReceiveEvent(ECS::EventBase& a_Event) override;
 };

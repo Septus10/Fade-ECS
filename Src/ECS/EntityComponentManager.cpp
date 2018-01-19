@@ -15,17 +15,29 @@ Entity EntityManager::CreateEntity()
 	return ID;
 }
 //===========================================================================//
-std::vector<Entity> EntityManager::GetEntitiesWithComponents(u64 Components)
+std::vector<Entity> EntityManager::GetEntitiesWithComponents(std::vector<usize> Components)
 {
-	std::vector<Entity> Entities;
+	std::vector<Entity> Entities(EntityMap_.size());
 	for (auto& it : EntityMap_)
 	{
-		if ((it.second & Components) == Components)
+		usize RequiredComponents = Components.size();
+		for (auto& hash : it.second)
+		{
+			for (auto& hash2 : Components)
+			{
+				if (hash == hash2)
+				{
+					RequiredComponents--;
+				}
+			}
+		}
+
+		if (RequiredComponents == 0)
 		{
 			Entities.push_back(it.first);
 		}
 	}
-
+	Entities.shrink_to_fit();
 	return Entities;
 }
 //===========================================================================//

@@ -21,9 +21,6 @@
     <ClInclude Include="Src\ECS\System.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Src\ECS\Components\ComponentFamilies.hpp">
-      <Filter>ECS\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Rendering\SpriteManager.hpp">
       <Filter>Rendering</Filter>
     </ClInclude>

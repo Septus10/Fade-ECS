@@ -16,6 +16,7 @@
 #include "Rendering/RenderSystem.hpp"
 #include "Rendering/Window.hpp"
 #include "ECS/Components/Input.hpp"
+#include <typeindex>
 
 
 const int SCREEN_WIDTH = 1280;
@@ -29,16 +30,16 @@ bool	g_ShouldRun	= true;
 #undef main
 int main(int argc, char** argv)
 {
-    g_ExecutablePath = argv[0];
+	g_ExecutablePath = argv[0];
 
 	Rendering::Window wnd;
 	wnd.Create(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-    ECS::EntityManager eMgr;
-    ECS::Entity ent = eMgr.CreateEntity();
-    Transform* trans = eMgr.AddComponent<Transform>(ent);
-    trans->PosX = 100;
-    trans->PosY = 100;
+	ECS::EntityManager eMgr;
+	ECS::Entity ent = eMgr.CreateEntity();
+	Transform* trans = eMgr.AddComponent<Transform>(ent);
+	trans->PosX = 100;
+	trans->PosY = 100;
 	eMgr.AddSingletonComponent<Input>(ent);
 	Velocity* vel = eMgr.AddComponent<Velocity>(ent);
 	if (!vel)
@@ -48,17 +49,19 @@ int main(int argc, char** argv)
 	vel->VelX = 10.f;
 	vel->VelY = 10.f;
 
-    ECS::SystemManager systemMgr(&eMgr);
-    systemMgr.RegisterSystem<Gameplay::MovementSystem>();
+	ECS::SystemManager systemMgr(&eMgr);
+	systemMgr.RegisterSystem<Gameplay::MovementSystem>();
 	systemMgr.RegisterSystem<Gameplay::InputSystem>();
 	auto renderSystem = systemMgr.RegisterSystem<Rendering::RenderSystem>();
 	renderSystem->SetWindowContext(&wnd);
 
-    Timer timer, fixedTimer;
-    timer.start();
+	Timer timer, fixedTimer;
+	timer.start();
+
     fixedTimer.start();
     const float FixedFpsSeconds = 1.f / FIXED_FPS;
 	
+	double time = 0.f;
     while (g_ShouldRun)
     {	
 		wnd.ClearScreen();
@@ -86,6 +89,7 @@ int main(int argc, char** argv)
 				systemMgr.SendEvent(ie);
 			}
 		}
+
         systemMgr.PreTickSystems();
         systemMgr.TickSystems(timer.elapsed());
 		timer.reset();

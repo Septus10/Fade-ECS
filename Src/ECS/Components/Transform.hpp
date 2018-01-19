@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Velocity.hpp"
-#include "ComponentFamilies.hpp"
 
 #include <intrin.h>
 
@@ -12,11 +11,6 @@ struct Transform
 		PosX = PosY = PosZ = 0.f;
 		RotX = RotY = RotZ = 0.f;
 		SclX = SclY = SclZ = 0.f;
-	}
-
-	static ECS::ComponentFamily GetComponentFamily()
-	{
-		return ECS::CF_Transform;
 	}
 
 	float PosX, PosY, PosZ;

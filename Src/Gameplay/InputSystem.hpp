@@ -12,7 +12,7 @@ public:
     virtual void PreTick() override;
 	virtual void Tick(double DeltaTime) override;
 	virtual void FixedTick(double FixedDeltaTime) override;
-	virtual u64 GetRequiredComponents() const override;
+	virtual std::vector<usize> GetRequiredComponents() const override;
 	virtual void ReceiveEvent(ECS::EventBase& a_Event) override;
 
 private:

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ComponentFamilies.hpp"
-
 struct Velocity
 {
 	Velocity()
@@ -10,11 +8,6 @@ struct Velocity
 		JumpVelocity = 0.f;
 		IsJumping = false;
 		IsFalling = false;
-	}
-
-	static ECS::ComponentFamily GetComponentFamily()
-	{
-		return ECS::CF_Velocity;
 	}
 
 	float VelX, VelY, VelZ, JumpVelocity;

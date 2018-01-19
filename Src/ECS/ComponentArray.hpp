@@ -2,7 +2,6 @@
 
 #include "../Globals.h"
 #include "Entity.hpp"
-#include "Components/ComponentFamilies.hpp"
 #include <cstdlib>
 #include <vector>
 #include <unordered_map>
@@ -32,7 +31,7 @@ public:
 
 struct ComponentData
 {
-	ComponentFamily	Family_;
+	usize			TypeHash_;
 	usize			Offset_;
 };
 
@@ -82,10 +81,11 @@ private:
     template <typename T>
     inline T* GetComponentFromComponentDataArray(std::vector<ComponentData> Array)
 	{
-        ComponentFamily Family = T::GetComponentFamily();
+		const std::type_info& type_info = typeid(T);
+        usize Hash = type_info.hash_code();
         for (auto& it: Array)
         {
-            if (it.Family_ == Family)
+            if (it.TypeHash_ == Hash)
             {
                 usize IntAddress = reinterpret_cast<usize>(Data_) + it.Offset_;
                 return reinterpret_cast<T*>(IntAddress);
@@ -107,7 +107,7 @@ private:
         Pointer Address = reinterpret_cast<void*>(IntAddress);
         T* Comp =  static_cast<T*>(new(Address) T());
 
-        CompData.Family_ = T::GetComponentFamily();
+        CompData.TypeHash_ = typeid(T).hash_code();
         CompData.Offset_ = DataSize_;
 
         DataSize_	    += Size;
@@ -195,13 +195,14 @@ public:
 	template <typename T>
 	std::vector<T*> GetComponentsOfType()
 	{
-		ComponentFamily Family = T::GetComponentFamily();
+		const std::type_info& type_info = typeid(T);
+		usize Hash = type_info.hash_code();
 		std::vector<T*> Components;
 		for (auto& Ent: EntityComponentOffsets_)
 		{
 			for (auto& it: Ent.second)
 			{
-				if (it.Family_ == Family)
+				if (it.TypeHash_ == Hash)
 				{
 					usize IntAddress = reinterpret_cast<usize>(Data_) + it.Offset_;
 					T* Component = reinterpret_cast<T*>(IntAddress);
