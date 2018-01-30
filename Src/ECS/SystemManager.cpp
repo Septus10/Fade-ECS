@@ -5,10 +5,10 @@ namespace ECS {
 //===========================================================================//
 void SystemManager::PreTickSystems()
 {
-    for (auto& System: Systems_)
-    {
-        System->PreTick();
-    }
+	for (auto& System : Systems_)
+	{
+		System->PreTick();
+	}
 }
 //===========================================================================//
 void SystemManager::TickSystems(double DeltaTime)

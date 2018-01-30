@@ -4,5 +4,5 @@
 
 struct Sprite
 {
-    Rendering::SpriteHandle SpriteHandle;
+	Rendering::SpriteHandle SpriteHandle;
 };

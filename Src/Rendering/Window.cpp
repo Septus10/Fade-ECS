@@ -60,12 +60,12 @@ void Window::ClearScreen()
 //===========================================================================//
 SDL_Surface* Window::GetScreenSurface() const
 {
-    return ScreenSurface_;
+	return ScreenSurface_;
 }
 //===========================================================================//
 SDL_Window* Window::GetWindowHandle() const
 {
-    return Window_;
+	return Window_;
 }
 //===========================================================================//
 

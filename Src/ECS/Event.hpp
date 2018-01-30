@@ -3,7 +3,7 @@
 #include "../Globals.h"
 
 namespace ECS {
-	
+
 enum Events
 {
 	E_InputEvent = 1
@@ -19,7 +19,8 @@ struct Event : public EventBase
 {
 	Event() :
 		EventID(EvID)
-	{ }
+	{
+	}
 
 	virtual ~Event() = default;
 
@@ -36,7 +37,7 @@ enum InputAction
 struct InputEvent : public Event<E_InputEvent>
 {
 	u32				Key;
-	InputAction		Action;	
+	InputAction		Action;
 };
 
 }

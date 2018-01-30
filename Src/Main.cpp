@@ -25,7 +25,7 @@ const int SCREEN_HEIGHT = 720;
 #define FIXED_FPS 60
 
 c8*		g_ExecutablePath;
-bool	g_ShouldRun	= true;
+bool	g_ShouldRun = true;
 
 #undef main
 int main(int argc, char** argv)
@@ -58,12 +58,12 @@ int main(int argc, char** argv)
 	Timer timer, fixedTimer;
 	timer.start();
 
-    fixedTimer.start();
-    const float FixedFpsSeconds = 1.f / FIXED_FPS;
-	
+	fixedTimer.start();
+	const float FixedFpsSeconds = 1.f / FIXED_FPS;
+
 	double time = 0.f;
-    while (g_ShouldRun)
-    {	
+	while (g_ShouldRun)
+	{
 		wnd.ClearScreen();
 		SDL_Event e{ 0 };
 		while (SDL_PollEvent(&e) != 0)
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 				g_ShouldRun = false;
 				break;
 			}
-			
+
 			if (e.type == SDL_KEYDOWN)
 			{
 				ECS::InputEvent ie;
@@ -90,15 +90,15 @@ int main(int argc, char** argv)
 			}
 		}
 
-        systemMgr.PreTickSystems();
-        systemMgr.TickSystems(timer.elapsed());
+		systemMgr.PreTickSystems();
+		systemMgr.TickSystems(timer.elapsed());
 		timer.reset();
-        if (fixedTimer.elapsed() > FixedFpsSeconds)
-        {
-            systemMgr.FixedTickSystems(fixedTimer.elapsed());
+		if (fixedTimer.elapsed() > FixedFpsSeconds)
+		{
+			systemMgr.FixedTickSystems(fixedTimer.elapsed());
 			fixedTimer.reset();
-        }
-    }
+		}
+	}
 
 	return 0;
 }

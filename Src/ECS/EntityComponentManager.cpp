@@ -1,10 +1,13 @@
 #include "EntityComponentManager.hpp"
 
+#include <limits>
+
 namespace ECS {
 
 //===========================================================================//	
 EntityManager::~EntityManager()
-{ }
+{
+}
 //===========================================================================//
 Entity EntityManager::CreateEntity()
 {
@@ -17,28 +20,38 @@ Entity EntityManager::CreateEntity()
 //===========================================================================//
 std::vector<Entity> EntityManager::GetEntitiesWithComponents(std::vector<usize> Components)
 {
+	usize ComponentBits = 0;
+	for (auto& it: Components)
+	{
+		ComponentBits |= BitMap_[it];
+	}
+
 	std::vector<Entity> Entities(EntityMap_.size());
 	for (auto& it : EntityMap_)
 	{
-		usize RequiredComponents = Components.size();
-		for (auto& hash : it.second)
-		{
-			for (auto& hash2 : Components)
-			{
-				if (hash == hash2)
-				{
-					RequiredComponents--;
-				}
-			}
-		}
-
-		if (RequiredComponents == 0)
+		if ((it.second & ComponentBits) == ComponentBits)
 		{
 			Entities.push_back(it.first);
-		}
+		}		
 	}
-	Entities.shrink_to_fit();
 	return Entities;
+}
+//===========================================================================//
+usize EntityManager::RegisterComponentType(usize ComponentHash)
+{
+	auto LastBit = BitMap_.end()->second;
+	LastBit <<= 1;
+
+#ifdef _DEBUG
+	if (LastBit == std::numeric_limits<usize>::max() - 1)
+	{
+		throw std::exception("Unable to register component, all bits are currently in use\nConsider using more bits for components.");
+	}
+#endif
+
+	BitMap_.insert({ ComponentHash, LastBit });
+
+	return LastBit;
 }
 //===========================================================================//
 Entity EntityManager::generateEntityID() const

@@ -8,7 +8,7 @@
 #include <iostream>
 
 namespace ECS {
-	
+
 class Allocator
 {
 public:
@@ -24,8 +24,8 @@ public:
 		if (Address)
 		{
 			std::cout << "Freeing memory at address: " << Address << "\n";
-			return std::free(Address);			
-		}		
+			return std::free(Address);
+		}
 	}
 };
 
@@ -41,12 +41,14 @@ class ComponentArray
 private:
 	usize							MaxSize_;
 
+	// big blob of components, saved in order of entity
 	Pointer							Data_;
 	usize							DataSize_;
+	
+	std::vector<usize>				EntityStartOffsets_;
 	std::unordered_map
-		<Entity, std::vector<ComponentData>>		EntityComponentOffsets_;
-    std::vector<ComponentData>      SingletonComponentOffsets_;
-        
+		<usize, usize>				ComponentOffsets_;
+	usize							LastOffset_;
 	usize							NumComponents_;
 	Alloc							Alloc_;
 
@@ -75,45 +77,63 @@ private:
 		else
 		{
 			ResizeFromEmpty(NewSize);
-		}		
+		}
 	}
 
-    template <typename T>
-    inline T* GetComponentFromComponentDataArray(std::vector<ComponentData> Array)
+	template <typename T>
+	inline T* GetComponentFromComponentDataArray(std::vector<ComponentData> Array)
 	{
 		const std::type_info& type_info = typeid(T);
-        usize Hash = type_info.hash_code();
-        for (auto& it: Array)
-        {
-            if (it.TypeHash_ == Hash)
-            {
-                usize IntAddress = reinterpret_cast<usize>(Data_) + it.Offset_;
-                return reinterpret_cast<T*>(IntAddress);
-            }
-        }
+		usize Hash = type_info.hash_code();
+		for (auto& it : Array)
+		{
+			if (it.TypeHash_ == Hash)
+			{
+				usize IntAddress = reinterpret_cast<usize>(Data_) + it.Offset_;
+				return reinterpret_cast<T*>(IntAddress);
+			}
+		}
 
-        return nullptr;
+		return nullptr;
 	}
 
-    template <typename T>
-    T* StoreComponentInMemory(const usize Size, ComponentData& CompData)
+	template <typename T>
+	T* StoreComponentAtOffset(const usize Size, const usize Offset)
 	{
-        if (Size + DataSize_ > MaxSize_)
-        {
-            Resize(DataSize_ + Size);
-        }
+		if (Size + DataSize_ > MaxSize_)
+		{
+			Resize(DataSize_ + Size);
+		}
 
-        usize IntAddress = reinterpret_cast<usize>(Data_) + DataSize_;
-        Pointer Address = reinterpret_cast<void*>(IntAddress);
-        T* Comp =  static_cast<T*>(new(Address) T());
+		T* Comp;
 
-        CompData.TypeHash_ = typeid(T).hash_code();
-        CompData.Offset_ = DataSize_;
+		return Comp;
+	}
 
-        DataSize_	    += Size;
-        NumComponents_  ++;
+	template <typename T>
+	T* StoreComponentInMemory(const usize Size, ComponentData& CompData)
+	{
+		if (Size + DataSize_ > MaxSize_)
+		{
+			Resize(DataSize_ + Size);
+		}
 
-        return Comp;
+		usize IntAddress = reinterpret_cast<usize>(Data_) + DataSize_;
+		Pointer Address = reinterpret_cast<void*>(IntAddress);
+		T* Comp = static_cast<T*>(new(Address) T());
+
+		CompData.TypeHash_ = typeid(T).hash_code();
+		CompData.Offset_ = DataSize_;
+
+		DataSize_ += Size;
+		NumComponents_++;
+
+		return Comp;
+	}
+
+	usize GetNextFreeOffsetOfEntity(Entity ID)
+	{
+		return 0;
 	}
 
 public:
@@ -122,9 +142,16 @@ public:
 		Data_			= nullptr;
 		MaxSize_		= 0;
 		DataSize_		= 0;
+		LastOffset_		= 0;
 		NumComponents_	= 0;
 	}
-	
+
+	ComponentArray(usize ReservedSize) :
+		ComponentArray()
+	{
+		Resize(ReservedSize);
+	}
+
 	~ComponentArray()
 	{
 		Alloc_.Free(Data_);
@@ -138,58 +165,52 @@ public:
 			return Test;
 		}
 
-        if (T* Test = GetSingletonComponent<T>())
-        {
-            return Test;
-        }
-
-		usize ComponentSize = sizeof(T);
-        ComponentData EntityCompData;
-		T* Comp = StoreComponentInMemory<T>(ComponentSize, EntityCompData);
-		if (EntityComponentOffsets_.find(OwnerID) == EntityComponentOffsets_.end())
+		if (T* Test = GetSingletonComponent<T>())
 		{
-			EntityComponentOffsets_.insert(
-				std::pair<Entity, std::vector<ComponentData>>(
-					OwnerID, 
-					std::vector<ComponentData>()
-					)
-				);
+			return Test;
 		}
-		EntityComponentOffsets_[OwnerID].push_back(EntityCompData);
+
+		usize ComponentSize		= sizeof(T);
+		usize RequiredOffset	= GetNextFreeOffsetOfEntity(OwnerID);
+
+		T* Comp = StoreComponentAtOffset<T>(ComponentSize, RequiredOffset);
+
+
+
 		return Comp;
 	}
 
-    template <typename T>
-    T* StoreNewSingletonComponent(const Entity EntityID)
-    {
-        if (T* Test = GetSingletonComponent<T>())
-        {
-            return Test;
-        }
+	template <typename T>
+	T* StoreNewSingletonComponent(const Entity EntityID)
+	{
+		if (T* Test = GetSingletonComponent<T>())
+		{
+			return Test;
+		}
 
-        usize ComponentSize = sizeof(T);
-        ComponentData CompData;
-        T* Comp = StoreComponentInMemory<T>(ComponentSize, CompData);
-        SingletonComponentOffsets_.push_back(CompData);
-        return Comp;
-    }
+		usize ComponentSize = sizeof(T);
+		ComponentData CompData;
+		T* Comp = StoreComponentInMemory<T>(ComponentSize, CompData);
+		SingletonComponentOffsets_.push_back(CompData);
+		return Comp;
+	}
 
 	template <typename T>
 	T* GetComponentFromEntity(Entity EntityID)
-	{		
+	{
 		auto& ComponentIndices = EntityComponentOffsets_[EntityID];
 		T* Comp = GetComponentFromComponentDataArray<T>(ComponentIndices);
-        if (!Comp)
-        {
-            Comp = GetSingletonComponent<T>();
-        }
-        return Comp;
+		if (!Comp)
+		{
+			Comp = GetSingletonComponent<T>();
+		}
+		return Comp;
 	}
 
-    template <typename T>
-    T* GetSingletonComponent()
+	template <typename T>
+	T* GetSingletonComponent()
 	{
-	    return GetComponentFromComponentDataArray<T>(SingletonComponentOffsets_);
+		return GetComponentFromComponentDataArray<T>(SingletonComponentOffsets_);
 	}
 
 	template <typename T>
@@ -198,9 +219,9 @@ public:
 		const std::type_info& type_info = typeid(T);
 		usize Hash = type_info.hash_code();
 		std::vector<T*> Components;
-		for (auto& Ent: EntityComponentOffsets_)
+		for (auto& Ent : EntityComponentOffsets_)
 		{
-			for (auto& it: Ent.second)
+			for (auto& it : Ent.second)
 			{
 				if (it.TypeHash_ == Hash)
 				{
@@ -208,7 +229,7 @@ public:
 					T* Component = reinterpret_cast<T*>(IntAddress);
 					Components.push_back(Component);
 				}
-			}			
+			}
 		}
 
 		return Components;

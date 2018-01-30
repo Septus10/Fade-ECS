@@ -5,23 +5,28 @@
 #include "../ECS/Components/Input.hpp"
 
 namespace Gameplay {
-	
+
 float g_Gravity = 9.f;
+
+struct MovementTuple
+{
+	Transform*	Trans;
+	Velocity*	Vel;
+	Input*		Inp;
+};
 
 //===========================================================================//
 void MovementSystem::Tick(double DeltaTime)
 {
-	std::vector<ECS::Entity> ValidEntities = 
-		EntityManager_->GetEntitiesWithComponents(GetRequiredComponents());
-
 	float fDeltaTime = static_cast<float>(DeltaTime);
 
-	for (int i = 0; i < ValidEntities.size(); i++)
+	auto MovementComponents = EntityManager_->GetComponentsOfTuple<Transform, Velocity, Input>();
+
+	for (auto& it: MovementComponents)
 	{
-		ECS::Entity Cur = ValidEntities[i];
-		Transform*	Trans	= EntityManager_->GetComponentFromEntity<Transform>(Cur);
-		Velocity*	Vel		= EntityManager_->GetComponentFromEntity<Velocity>(Cur);
-		Input*		Inp		= EntityManager_->GetComponentFromEntity<Input>(Cur);
+		Transform*	Trans	= std::get<0>(it);
+		Velocity*	Vel		= std::get<1>(it);
+		Input*		Inp		= std::get<2>(it);
 
 		if (Inp->Keys[SDL_SCANCODE_D] || Inp->Keys[SDL_SCANCODE_RIGHT])
 		{
@@ -45,16 +50,7 @@ void MovementSystem::Tick(double DeltaTime)
 //===========================================================================//
 void MovementSystem::FixedTick(double FixedDeltaTime)
 {
-	
-}
-//===========================================================================//
-std::vector<usize> MovementSystem::GetRequiredComponents() const
-{
-	return std::vector<usize> {
-		typeid(Transform).hash_code(),
-		typeid(Input).hash_code(),
-		typeid(Velocity).hash_code()
-	};
+
 }
 //===========================================================================//
 void MovementSystem::ReceiveEvent(ECS::EventBase& a_Event)

@@ -11,44 +11,37 @@ namespace Gameplay {
 //===========================================================================//
 void InputSystem::PreTick()
 {
-    auto InputComponents = EntityManager_->GetComponentsOfType<Input>();
-    for (int i = 0; i < InputEventQueue.size(); i++)
-    {
-        ECS::InputEvent Cur = InputEventQueue.front();
-        for (auto& Comp : InputComponents)
-        {
-            auto* Key = &Comp->Keys[Cur.Key];
-            switch (Cur.Action)
-            {
-                case ECS::IA_Pressed:
-                    *Key = true;
-                break;
-                case ECS::IA_Released:
-                    *Key = false;
-                break;
-                default:
-                break;
-            }
-        }
-        InputEventQueue.pop();
-    }    
+	auto InputComponents = EntityManager_->GetComponentsOfType<Input>();
+	for (int i = 0; i < InputEventQueue.size(); i++)
+	{
+		ECS::InputEvent Cur = InputEventQueue.front();
+		for (auto& Comp : InputComponents)
+		{
+			auto* Key = &Comp->Keys[Cur.Key];
+			switch (Cur.Action)
+			{
+			case ECS::IA_Pressed:
+				*Key = true;
+				break;
+			case ECS::IA_Released:
+				*Key = false;
+				break;
+			default:
+				break;
+			}
+		}
+		InputEventQueue.pop();
+	}
 }
 //===========================================================================//
 void InputSystem::Tick(double DeltaTime)
 {
-	
+
 }
 //===========================================================================//
 void InputSystem::FixedTick(double FixedDeltaTime)
 {
-	
-}
-//===========================================================================//
-std::vector<usize> InputSystem::GetRequiredComponents() const
-{
-	return std::vector<usize> {
-		typeid(Input).hash_code()
-	};
+
 }
 //===========================================================================//
 void InputSystem::ReceiveEvent(ECS::EventBase& a_Event)
