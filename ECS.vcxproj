@@ -135,7 +135,6 @@
     <ClInclude Include="Src\Gameplay\InputSystem.hpp" />
     <ClInclude Include="Src\Gameplay\MovementSystem.hpp" />
     <ClInclude Include="Src\Globals.h" />
-    <ClInclude Include="Src\Rendering\RenderSystem.hpp" />
     <ClInclude Include="Src\Rendering\SpriteManager.hpp" />
     <ClInclude Include="Src\Rendering\Window.hpp" />
     <ClInclude Include="Src\Timer.hpp" />
@@ -146,7 +145,6 @@
     <ClCompile Include="Src\Gameplay\InputSystem.cpp" />
     <ClCompile Include="Src\Gameplay\MovementSystem.cpp" />
     <ClCompile Include="Src\Main.cpp" />
-    <ClCompile Include="Src\Rendering\RenderSystem.cpp" />
     <ClCompile Include="Src\Rendering\SpriteManager.cpp" />
     <ClCompile Include="Src\Rendering\Window.cpp" />
   </ItemGroup>

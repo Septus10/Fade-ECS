@@ -12,9 +12,6 @@
     <ClInclude Include="Src\ECS\ComponentArray.hpp">
       <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Rendering\RenderSystem.hpp">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Gameplay\MovementSystem.hpp">
       <Filter>Gameplay</Filter>
     </ClInclude>
@@ -54,9 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Main.cpp" />
-    <ClCompile Include="Src\Rendering\RenderSystem.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Gameplay\MovementSystem.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
