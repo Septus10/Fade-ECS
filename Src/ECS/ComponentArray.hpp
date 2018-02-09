@@ -47,7 +47,7 @@ private:
 	
 	std::vector<usize>				EntityStartOffsets_;
 	std::unordered_map
-		<usize, usize>				ComponentOffsets_;
+		<usize, std::vector<usize>> ComponentOffsets_;
 	usize							LastOffset_;
 	usize							NumComponents_;
 	Alloc							Alloc_;
@@ -83,8 +83,7 @@ private:
 	template <typename T>
 	inline T* GetComponentFromComponentDataArray(std::vector<ComponentData> Array)
 	{
-		const std::type_info& type_info = typeid(T);
-		usize Hash = type_info.hash_code();
+		usize Hash = typeid(T).hash_code();
 		for (auto& it : Array)
 		{
 			if (it.TypeHash_ == Hash)
@@ -105,35 +104,48 @@ private:
 			Resize(DataSize_ + Size);
 		}
 
-		T* Comp;
-
-		return Comp;
-	}
-
-	template <typename T>
-	T* StoreComponentInMemory(const usize Size, ComponentData& CompData)
-	{
-		if (Size + DataSize_ > MaxSize_)
+		// if we're behind the final component
+		if (Offset >= DataSize_)
 		{
-			Resize(DataSize_ + Size);
+			// we've already resized the array if necessary, so we just grab the offset
+			// no need to move around anything
+			DataSize_ += Size;
+			return new(Offset) T(); 
 		}
 
-		usize IntAddress = reinterpret_cast<usize>(Data_) + DataSize_;
-		Pointer Address = reinterpret_cast<void*>(IntAddress);
-		T* Comp = static_cast<T*>(new(Address) T());
-
-		CompData.TypeHash_ = typeid(T).hash_code();
-		CompData.Offset_ = DataSize_;
-
+		// if we get here it means that we're putting the component somewhere between other components
+		// this is where it gets tricky, we'll have to move part of the data and update all offsets accordingly
+			// Move the memory around
+		void* StartAddress = reinterpret_cast<void*>(Offset + DataSize_);
+		void* MoveAddress = reinterpret_cast<void*>(Offset + DataSize_ + Size);
+		usize MoveSize = DataSize_ - Offset;
+		memmove(MoveAddress, StartAddress, MoveSize);
+			// Update all appropriate offsets
+		for (auto& offset: EntityStartOffsets_)
+		{
+			if (offset >= Offset)
+			{
+				offset += Size;
+			}
+		}
 		DataSize_ += Size;
-		NumComponents_++;
-
-		return Comp;
+		return new(Offset) T();
 	}
 
 	usize GetNextFreeOffsetOfEntity(Entity ID)
 	{
-		return 0;
+		auto Size = EntityStartOffsets_.size();
+		if (ID >= EntityStartOffsets_.size())
+		{
+			throw std::exception("Index out of range");
+		}
+
+		if (ID == Size - 1)
+		{
+			return DataSize_;
+		}
+
+		return EntityStartOffsets_[ID];
 	}
 
 public:
@@ -165,33 +177,16 @@ public:
 			return Test;
 		}
 
-		if (T* Test = GetSingletonComponent<T>())
-		{
-			return Test;
-		}
-
 		usize ComponentSize		= sizeof(T);
 		usize RequiredOffset	= GetNextFreeOffsetOfEntity(OwnerID);
 
 		T* Comp = StoreComponentAtOffset<T>(ComponentSize, RequiredOffset);
 
+		usize ParentOffset		= EntityStartOffsets_[OwnerID] - RequiredOffset;
+		usize Hash				= typeid(T).hash_code();
 
+		ComponentOffsets_[Hash][OwnerID] = ParentOffset;
 
-		return Comp;
-	}
-
-	template <typename T>
-	T* StoreNewSingletonComponent(const Entity EntityID)
-	{
-		if (T* Test = GetSingletonComponent<T>())
-		{
-			return Test;
-		}
-
-		usize ComponentSize = sizeof(T);
-		ComponentData CompData;
-		T* Comp = StoreComponentInMemory<T>(ComponentSize, CompData);
-		SingletonComponentOffsets_.push_back(CompData);
 		return Comp;
 	}
 
@@ -205,12 +200,6 @@ public:
 			Comp = GetSingletonComponent<T>();
 		}
 		return Comp;
-	}
-
-	template <typename T>
-	T* GetSingletonComponent()
-	{
-		return GetComponentFromComponentDataArray<T>(SingletonComponentOffsets_);
 	}
 
 	template <typename T>

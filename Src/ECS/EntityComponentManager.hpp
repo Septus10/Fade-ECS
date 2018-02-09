@@ -96,7 +96,8 @@ public:
 	template <typename... Types>
 	std::vector<std::tuple<Types*...>> GetComponentsOfTuple()
 	{
-		GetEntitiesWithComponents(typeid(Types).hash_code...);
+		std::vector<std::tuple<Types*...>> ComponentTuples;
+		
 		return std::vector<std::tuple<Types*...>>();
 	}
 
